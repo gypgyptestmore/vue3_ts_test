@@ -5,12 +5,15 @@
     <button @click="showlog">测试</button>
     <person :list="persons"></person>
     <live></live>
+    <useSum></useSum>
   </div>
 </template>
 <script lang="ts" name="App" setup>
 import { ref, defineExpose } from "vue";
 import Person from "./components/Person.vue";
 import Live from "./components/live.vue";
+import useSum from "./components/useSum.vue";
+
 import { type Persons } from "./types/index";
 
 let ren = ref();
