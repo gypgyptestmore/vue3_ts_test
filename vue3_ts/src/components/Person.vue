@@ -45,6 +45,26 @@
     </div>
     <button @click="benchi">汽车1改</button>
     <button @click="baoma">汽车2改</button>
+    <div>
+      <h3>需求：水温到达 50℃，或水位到达 20cm，联系服务器</h3>
+      <div id="demo">水位：{{ temp }}</div>
+      <div>温度：{{ height }}</div>
+      <button @click="addtemp">水位+10</button>
+      <button @click="addheight">高度+1</button>
+      <div>
+        ref获取节点或组件实例
+        <div ref="title1">shangguigu</div>
+        <div ref="title2">节点 2</div>
+        <div ref="title3">节点 3</div>
+        <input type="text" name="" id="" ref="inpt" /><br />
+        <button @click="sholom">点击打印ref</button>
+      </div>
+    </div>
+    <ul>
+      <li v-for="item in list" :key="item.id">
+        {{ item.name }} -- {{ item.age }}
+      </li>
+    </ul>
   </div>
 </template>
   
@@ -55,17 +75,43 @@ export default {
 </script> -->
 
 <script setup lang="ts" name="Person">
-import { ref, reactive, toRef, toRefs, computed, watch } from "vue";
+import { type GamesInter, type Games, type Persons } from "../types/index";
+import {
+  ref,
+  reactive,
+  toRef,
+  toRefs,
+  computed,
+  watch,
+  watchEffect,
+  defineExpose,
+  defineProps,
+} from "vue";
 
+//第一种写法：仅接收
+// const props = defineProps(["list"]);
+// 2.接受+限制类型
+// defineProps<{ list: Persons }>();
+// 3.接受+限制类型+指定默认值+限制必要性
+let props = withDefaults(defineProps<{ list?: Persons }>(), {
+  list: () => [
+    {
+      id: "vdafe01",
+      name: "小猪",
+      age: 20,
+    },
+  ],
+});
 let name = ref("张三");
 let date = ref("周三");
 let age = ref(1);
 let obj = reactive({ names: "赵丽颖", age: "18", sex: "woman" });
-let games = reactive([
+let games: Games = [
+  //let games:GamesInter[]=[{},{}] 或者let games: Array<GamesInter>=[{},{}]
   { id: 1, name: "原神", bank: "yiban" },
-  { id: 2, name: "幻兽帕鲁", bank: "xihuan" },
+  { id: 2, name: "幻兽帕鲁", bank: "xian" },
   { id: 3, name: "双人成行", bank: "henxihuan" },
-]);
+];
 let haha = reactive({
   a: {
     b: {
@@ -228,8 +274,54 @@ watch(
   },
   { deep: true }
 );
+// watcheffect
+let temp = ref(30);
+let height = ref(10);
+function addtemp() {
+  temp.value += 10;
+}
+function addheight() {
+  height.value += 1;
+}
+// watch实现指出监视数据
+// watch(
+//   () => [temp.value, height.value],
+//   (newvalue, oldValue) => {
+//     console.log("水位或高度改变", newvalue, oldValue);
+//     const [newTemp, newHeight] = newvalue;
+//     if (newTemp > 50 || newHeight > 20) {
+//       console.log("联系服务器");
+//     }
+//   }
+// );
+const stopWtach = watchEffect(() => {
+  if (temp.value > 50 || height.value > 10) {
+    console.log(document.getElementById("demo")?.innerHTML);
+    console.log("联系服务器");
+  }
+  //   水温到达 100或水位到 50取消监视
+  if (temp.value === 100 || height.value === 50) {
+    console.log("清理了");
+    stopWtach();
+  }
+});
+
+// ref绑定组件或节点
+let title1 = ref();
+let title2 = ref();
+let title3 = ref();
+function sholom() {
+  //   const t1 = document.getElementById("title1");
+  //   console.log((t1 as HTMLElement).innerText);
+  //   console.log((<HTMLElement>t1).innerText);
+  //   console.log(t1?.innerHTML);
+  console.log(title1.value);
+  console.log(title2.value);
+  console.log(title3.value);
+}
+defineExpose({ title1, title2, title3 });
 </script>
-  
+
   <style scoped>
 .person {
   background-color: pink;
