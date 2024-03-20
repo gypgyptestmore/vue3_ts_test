@@ -27,6 +27,24 @@
     姓名：{{ person.name }} 年龄：{{ person.age }}
     <button @click="changeNames">改名字</button>
     <button @click="chantages">改年龄</button>
+    <div>监视[reactive]定义的【对象类型】数据</div>
+    <div>音乐家</div>
+    姓名：{{ person1.name }} 年龄：{{ person1.age }}
+    <button @click="changeNamesmus">改名字</button>
+    <button @click="changeagesmus">改年龄</button>
+    <button @click="changeallperson">修改整个人</button>
+    <div>测试{{ obj1.a.b.c }}</div>
+    <button @click="changeDeep">改变深层</button>
+    <div>
+      监视ref或reactive对象类型内的某个属性，属性值不是对象类型：写成函数；是对象类型：可直接编或者写函数
+      手动开启深度监视
+    </div>
+    <div>
+      汽车 1{{ person1.car.c1 }}<br />
+      1{{ person1.car.c2 }}
+    </div>
+    <button @click="benchi">汽车1改</button>
+    <button @click="baoma">汽车2改</button>
   </div>
 </template>
   
@@ -160,6 +178,53 @@ watch(
   person.value,
   (newValue, oldValue) => {
     console.log("person的值改变了", newValue, oldValue);
+  },
+  { deep: true }
+);
+let person1 = reactive({
+  name: "莫扎特",
+  age: 20,
+  car: {
+    c1: "福田",
+    c2: "五菱",
+  },
+});
+function changeagesmus() {
+  person1.age += 1;
+}
+function changeNamesmus() {
+  person1.name = "阿炳";
+}
+function changeallperson() {
+  Object.assign(person1, { name: "使用Object.assign改变", age: "40" });
+}
+watch(person1, (newValue, oldValue) => {
+  console.log("监听对象变化", newValue, oldValue);
+});
+let obj1 = reactive({
+  a: {
+    b: {
+      c: "我是深层",
+    },
+  },
+});
+function changeDeep() {
+  obj1.a.b.c = "直接改变对象调用属性，而不是使用Object.assign";
+}
+watch(obj1, (newValue, oldValue) => {
+  console.log("深层改变", newValue, oldValue);
+});
+
+function benchi() {
+  person1.car.c1 = "奔驰";
+}
+function baoma() {
+  person1.car.c2 = "宝马";
+}
+watch(
+  [() => person1.car, person1.name],
+  (newValue, oldValue) => {
+    console.log("对象属性值perosn.car变化了", newValue, oldValue);
   },
   { deep: true }
 );
