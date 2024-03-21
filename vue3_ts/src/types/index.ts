@@ -10,7 +10,8 @@ export interface GamesInter {
 export interface PersonInter{
     id:number,
     name:string,
-    age:number
+    age:number,
+    x?:number
 }
 
 export type Persons = Array<PersonInter>;
