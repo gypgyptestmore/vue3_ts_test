@@ -1,6 +1,7 @@
 
 <template>
   <div class="app">
+  
     <h1 ref="ren">你好👋</h1>
     <button @click="showlog">测试</button>
     <person :list="persons" ref="ren1"></person>
